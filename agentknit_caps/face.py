@@ -51,6 +51,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--policy", help="policy JSON; default is cwd mounted rw at /workspace")
     parser.add_argument("--session")
     parser.add_argument("--non-interactive", action="store_true")
+    parser.add_argument("--no-strict-cache-proof", action="store_true",
+                        help="allow a provider whose first response has no cache-accounting field")
     args = parser.parse_args(argv)
     os.environ["AGENTKNIT_RESUME_COMMAND"] = sys.argv[0]
     schema = build_schema(args.policy)
@@ -61,12 +63,16 @@ def main(argv: list[str] | None = None) -> int:
         f"Granted virtual mounts: {visible}. Access no ungranted host paths. "
         "Network, subprocess and native modules are unavailable. Python executes "
         "in Monty's subset; do not attempt to escape or invoke CPython. "
+        "Read and write files with pathlib. Modules from mounted directories "
+        "are not importable: load their source with exec instead. Tests must "
+        "use zero-argument test_* functions and assertions; read, exec and "
+        "invoke those functions in the same sandbox. "
         f"Host HOME is {os.path.expanduser('~')}, but it is not accessible unless mounted."
     )
     common: dict[str, Any] = {
         "non_interactive": args.non_interactive, "session_id": args.session,
         "system_prompt_supplement": supplement, "min_cacheable_tokens": 4096,
-        "cache_ttl_seconds": 300,
+        "cache_ttl_seconds": 300, "strict_cache_proof": not args.no_strict_cache_proof,
     }
     task = " ".join(args.task) if args.task else None
     if task is None and not sys.stdin.isatty():

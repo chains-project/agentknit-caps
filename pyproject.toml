@@ -9,7 +9,7 @@ description = "Capability-confined Python tools for agentknit"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
-dependencies = ["agentknit>=0.1.0", "pydantic-monty==1.6.0"]
+dependencies = ["agentknit>=0.1.0", "pydantic-monty==1.6.0", "keyring>=25"]
 
 [project.optional-dependencies]
 dev = ["pytest>=9", "pytest-cov>=7", "mypy>=2", "ruff>=0.17"]

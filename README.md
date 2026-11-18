@@ -22,7 +22,11 @@ agentknit-caps --json run --policy policy.json --code program.py
 
 `--policy` uses the same file across resumed sessions. The model cannot choose a
 policy, runtime binary, import callback or resource limit. Kimi endpoint settings
-and credentials come from inference-db entry `kimi-coding` on the host.
+and credentials come from inference-db entry `kimi-coding` on the host; the
+`keyring` dependency reads its Secret Service credentials. Strict
+cache-proof checking remains on by default. If the provider's first response
+has no cache-accounting field, `--no-strict-cache-proof` explicitly permits
+continuing without a cache guarantee.
 
 ## Policy
 
