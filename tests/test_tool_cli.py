@@ -8,10 +8,10 @@ import agentknit
 import pytest
 from _pytest.capture import CaptureFixture
 
-from agentknit_guarantees import face
-from agentknit_guarantees.cli import main
-from agentknit_guarantees.policy import load_policy
-from agentknit_guarantees.tool import python_tool
+from agentknit_caps import face
+from agentknit_caps.cli import main
+from agentknit_caps.policy import load_policy
+from agentknit_caps.tool import python_tool
 
 
 def test_only_python_is_exposed(monkeypatch: pytest.MonkeyPatch) -> None:

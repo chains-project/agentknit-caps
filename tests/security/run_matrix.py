@@ -7,8 +7,8 @@ import json
 import tempfile
 from pathlib import Path
 
-from agentknit_guarantees.policy import load_policy
-from agentknit_guarantees.runner import Runner
+from agentknit_caps.policy import load_policy
+from agentknit_caps.runner import Runner
 
 
 def run() -> list[dict[str, object]]:

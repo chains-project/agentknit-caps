@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from agentknit_guarantees.policy import PolicyError, load_policy
+from agentknit_caps.policy import PolicyError, load_policy
 
 
 def test_empty_policy_has_no_authority() -> None:

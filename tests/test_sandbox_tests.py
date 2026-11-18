@@ -2,9 +2,9 @@
 
 from pathlib import Path
 
-from agentknit_guarantees.policy import load_policy
-from agentknit_guarantees.runner import Runner
-from agentknit_guarantees.testing import invoke
+from agentknit_caps.policy import load_policy
+from agentknit_caps.runner import Runner
+from agentknit_caps.testing import invoke
 
 
 def runner_for(path: Path) -> Runner:

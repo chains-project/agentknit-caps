@@ -2,8 +2,8 @@
 
 from pathlib import Path
 
-from agentknit_guarantees.checker import check_code
-from agentknit_guarantees.policy import load_policy
+from agentknit_caps.checker import check_code
+from agentknit_caps.policy import load_policy
 
 
 def test_static_verdicts(tmp_path: Path) -> None:

@@ -13,7 +13,7 @@ from .runner import Runner
 
 
 def parser() -> argparse.ArgumentParser:
-    result = argparse.ArgumentParser(prog="agentknit-guarantees")
+    result = argparse.ArgumentParser(prog="agentknit-caps")
     result.add_argument("--json", action="store_true", help="emit machine-readable output")
     sub = result.add_subparsers(dest="command", required=True)
     for name in ("policy", "check", "run"):

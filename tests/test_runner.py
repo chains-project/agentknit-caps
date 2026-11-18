@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from agentknit_guarantees.policy import Policy, load_policy
-from agentknit_guarantees.runner import Registry, Runner
+from agentknit_caps.policy import Policy, load_policy
+from agentknit_caps.runner import Registry, Runner
 
 
 def policy_for(path: Path, mode: str = "rw", **kwargs: object) -> Policy:

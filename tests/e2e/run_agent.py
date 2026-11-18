@@ -8,9 +8,9 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-from agentknit_guarantees.policy import load_policy
-from agentknit_guarantees.testing import invoke
-from agentknit_guarantees.tool import python_tool
+from agentknit_caps.policy import load_policy
+from agentknit_caps.testing import invoke
+from agentknit_caps.tool import python_tool
 
 
 def run() -> dict[str, object]:

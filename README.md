@@ -1,4 +1,4 @@
-# agentknit-guarantees
+# agentknit-caps
 
 An agent receives capabilities, not ambient authority. A policy defines the
 resources it may use and the bounds on their use; anything not granted is denied.
@@ -15,9 +15,9 @@ mediation boundary, and whether independent tests can falsify that claim.
 ```bash
 agentknit-kimi-k3.1-guaranteed --policy policy.json 'Implement the requested change'
 agentknit-kimi-k3.1-guaranteed --session SESSION_ID --policy policy.json
-agentknit-guarantees --json policy --policy policy.json
-agentknit-guarantees --json check --policy policy.json --code program.py
-agentknit-guarantees --json run --policy policy.json --code program.py
+agentknit-caps --json policy --policy policy.json
+agentknit-caps --json check --policy policy.json --code program.py
+agentknit-caps --json run --policy policy.json --code program.py
 ```
 
 `--policy` uses the same file across resumed sessions. The model cannot choose a
@@ -97,7 +97,7 @@ when that is not acceptable.
 
 ## Tests in Monty
 
-`agentknit_guarantees.testing.invoke(paths)` returns source defining and calling
+`agentknit_caps.testing.invoke(paths)` returns source defining and calling
 `run_tests(paths)`. The runner discovers `test_*.py`, loads each file with
 sandboxed `exec`, and calls zero-argument `test_*` functions. Test and production
 code execute in the same Monty checkout and therefore have identical mounts,
@@ -110,7 +110,7 @@ this package itself and is never exposed to the agent.
 ## Development
 
 ```bash
-pytest --cov=agentknit_guarantees --cov-report=term-missing
-mypy agentknit_guarantees tests
+pytest --cov=agentknit_caps --cov-report=term-missing
+mypy agentknit_caps tests
 ruff check .
 ```

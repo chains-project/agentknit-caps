@@ -8,6 +8,6 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: '3.13'}
       - run: python -m pip install -e '.[dev]'
-      - run: pytest --cov=agentknit_guarantees --cov-report=term-missing
-      - run: mypy agentknit_guarantees tests
+      - run: pytest --cov=agentknit_caps --cov-report=term-missing
+      - run: mypy agentknit_caps tests
       - run: ruff check .
