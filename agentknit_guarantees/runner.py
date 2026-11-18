@@ -7,6 +7,7 @@ import os
 import threading
 from collections.abc import Callable
 from dataclasses import asdict, dataclass
+from datetime import date, datetime, tzinfo
 from pathlib import Path
 from typing import Any
 
@@ -15,6 +16,19 @@ from pydantic_monty import CollectString, Monty, MontyError, MountDir, OSAccess
 from .policy import Policy, PolicyError
 
 HostFunction = Callable[..., Any]
+
+
+class FixedOSAccess(OSAccess):
+    """Minimal environment/filesystem fallback with deterministic wall-clock values."""
+
+    def date_today(self) -> date:
+        return date(1970, 1, 1)
+
+    def datetime_now(self, tz: tzinfo | None = None) -> datetime:
+        return datetime(1970, 1, 1, tzinfo=tz)
+
+    def time(self, caller: str = "time.time") -> float:
+        return 0.0
 
 
 @dataclass
@@ -116,11 +130,12 @@ class Runner:
                       request_timeout=limits.wall_seconds) as pool,
                 pool.checkout(limits=resources, os_policy={  # type: ignore[arg-type]
                     "random_start": {"seed": 0}, "sleep_system_max": 0.0,
+                    "datetime": "call_host",
                 }) as session,
             ):
                 value = session.feed_run(
                     code, mount=mounts, external_lookup=self.functions,
-                    os=OSAccess(environ=dict(self.policy.env), max_urandom_bytes=0, max_sleep=0),
+                    os=FixedOSAccess(environ=dict(self.policy.env), max_urandom_bytes=0, max_sleep=0),
                     print_callback=collector,
                 )
             output = collector.output

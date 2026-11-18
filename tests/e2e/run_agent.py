@@ -6,6 +6,7 @@ import argparse
 import json
 import tempfile
 from pathlib import Path
+from typing import Any
 
 from agentknit_guarantees.policy import load_policy
 from agentknit_guarantees.testing import invoke
@@ -24,17 +25,22 @@ def run() -> dict[str, object]:
         )
         policy = load_policy(data={"fs": [{"host_path": directory, "virtual_path": "/workspace", "mode": "rw"}]})
         tool = python_tool(policy)
+
+        def invoke_tool(code: str) -> tuple[str, dict[str, object]]:
+            result = tool.fn(code)
+            assert isinstance(result, tuple)
+            return result
+
         calls = [
             "from pathlib import Path\nPath('/workspace/solution.py').write_text('answer = 42')",
             invoke(),
             "from pathlib import Path\nPath('/etc/passwd').read_text()",
         ]
-        transcript = []
+        transcript: list[dict[str, Any]] = []
         for code in calls:
-            text, metadata = tool.fn(code)
+            text, metadata = invoke_tool(code)
             assert isinstance(text, str)
             transcript.append({"tool": "python", "result": json.loads(text), "ok": metadata["ok"]})
-        sentinel = root.parent / "unreadable-sentinel"
         return {"tool_names": sorted({entry["tool"] for entry in transcript}),
                 "edit_succeeded": (root / "solution.py").read_text() == "answer = 42",
                 "tests_passed": transcript[1]["result"]["result"]["passed"] == 1,

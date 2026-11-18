@@ -28,7 +28,7 @@ exclude = "agentknit_guarantees/_sandbox_tests.py"
 
 [tool.ruff]
 line-length = 100
-extend-exclude = ["agentknit_guarantees/_sandbox_tests.py"]
+extend-exclude = ["agentknit_guarantees/_sandbox_tests.py", "tests/fixtures"]
 
 [tool.coverage.run]
 branch = true
