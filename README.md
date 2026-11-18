@@ -10,18 +10,7 @@ trust assumptions—not a proof of correctness, invulnerability or complete
 CPython compatibility. The critical question is whether every effect crosses one
 mediation boundary, and whether independent tests can falsify that claim.
 
-## Install and use
-
-```bash
-python -m venv .venv
-.venv/bin/pip install -e '.[dev]'
-.venv/bin/agentknit-kimi-k3.1-guaranteed 'Fix the failing tests in /workspace'
-```
-
-Without `--policy`, the current working directory is directly writable at the
-virtual path `/workspace`. This is intentionally direct: sandbox code can modify
-every file beneath an `rw` mount. Use a disposable checkout or a read-only policy
-when that is not acceptable.
+## Usage
 
 ```bash
 agentknit-kimi-k3.1-guaranteed --policy policy.json 'Implement the requested change'
@@ -59,27 +48,7 @@ name/value pairs. `policy --json` redacts their values. The initial host-functio
 registry is empty; embedding applications can explicitly register validated
 functions. Network, subprocess and native-code authority are not offered.
 
-## Tests in Monty
-
-`agentknit_guarantees.testing.invoke(paths)` returns source defining and calling
-`run_tests(paths)`. The runner discovers `test_*.py`, loads each file with
-sandboxed `exec`, and calls zero-argument `test_*` functions. Test and production
-code execute in the same Monty checkout and therefore have identical mounts,
-environment, host functions and limits. Failures are structured data, not a host
-process exit. This is a small Monty-compatible test protocol, **not pytest
-compatibility**: fixtures, plugins, parametrization, arbitrary third-party
-packages and CPython-only syntax are unsupported. Host pytest is used to test
-this package itself and is never exposed to the agent.
-
-## Static checker
-
-`check` has three outcomes and exit codes: `allowed` (0), `indeterminate` (2),
-and `denied` (3). Only literal, fully resolved host effects can be allowed;
-dynamic paths and dynamic execution are indeterminate. A denied result identifies
-a definite policy violation or syntax error. The checker is advisory and never
-replaces runtime confinement.
-
-## Guarantees and boundary
+## Guarantees
 
 For each run, only the declared mounts, environment values and registry functions
 are supplied to a fresh Monty checkout. No ambient host filesystem or environment
@@ -88,8 +57,6 @@ Monty's capability-relative mounts. Source, output, result, memory, recursion,
 suspensions, time, write bytes and total calls are bounded. A worker/session is
 never reused between model calls. Execution failures return structured errors and
 never fall back to CPython.
-
-### How to establish the claim
 
 State the claim as a total mediation property: every observable effect either is
 permitted by the effective policy or is absent. Then provide four kinds of
@@ -114,15 +81,31 @@ be OS-level isolation plus a machine-checked model of the complete host boundary
 The static checker is not that proof: dynamic Python remains indeterminate and
 runtime mediation is still required.
 
-### Current evidence and limitations
 
-This is a tested engineering confinement claim, not a formal proof or a claim
-that Monty has no vulnerabilities. Trust includes the host OS/Python process,
-agentknit, the pinned Monty runtime and every deliberately registered host
-function. Direct `rw` writes are real host writes and may be partially completed
-before an error. Allocator memory limits are not a hard process-RSS guarantee.
-No network or process capability means code cannot intentionally use those
-interfaces; this is not an OS-level containment claim against a Monty vulnerability.
+## Install
+
+```bash
+python -m venv .venv
+.venv/bin/pip install -e '.[dev]'
+.venv/bin/agentknit-kimi-k3.1-guaranteed 'Fix the failing tests in /workspace'
+```
+
+Without `--policy`, the current working directory is directly writable at the
+virtual path `/workspace`. This is intentionally direct: sandbox code can modify
+every file beneath an `rw` mount. Use a disposable checkout or a read-only policy
+when that is not acceptable.
+
+## Tests in Monty
+
+`agentknit_guarantees.testing.invoke(paths)` returns source defining and calling
+`run_tests(paths)`. The runner discovers `test_*.py`, loads each file with
+sandboxed `exec`, and calls zero-argument `test_*` functions. Test and production
+code execute in the same Monty checkout and therefore have identical mounts,
+environment, host functions and limits. Failures are structured data, not a host
+process exit. This is a small Monty-compatible test protocol, **not pytest
+compatibility**: fixtures, plugins, parametrization, arbitrary third-party
+packages and CPython-only syntax are unsupported. Host pytest is used to test
+this package itself and is never exposed to the agent.
 
 ## Development
 
