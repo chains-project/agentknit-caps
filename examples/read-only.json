@@ -1,0 +1,1 @@
+{"schema_version": 1, "fs": [{"host_path": ".", "virtual_path": "/workspace", "mode": "ro"}], "env": {}, "functions": [], "limits": {}}

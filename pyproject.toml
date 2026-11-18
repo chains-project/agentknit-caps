@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agentknit-guarantees"
+version = "0.1.0"
+description = "Capability-confined Python tools for agentknit"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = ["agentknit>=0.1.0", "pydantic-monty==1.6.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=9", "pytest-cov>=7", "mypy>=2", "ruff>=0.17"]
+
+[project.scripts]
+agentknit-guarantees = "agentknit_guarantees.cli:main"
+agentknit-kimi-k3_1-guaranteed = "agentknit_guarantees.face:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--strict-markers"
+
+[tool.mypy]
+strict = true
+exclude = "agentknit_guarantees/_sandbox_tests.py"
+
+[tool.ruff]
+line-length = 100
+extend-exclude = ["agentknit_guarantees/_sandbox_tests.py"]
+
+[tool.coverage.run]
+branch = true
+source = ["agentknit_guarantees"]
