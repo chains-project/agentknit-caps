@@ -1,8 +1,14 @@
 # agentknit-guarantees
 
-A standalone [agentknit](https://github.com/monperrus/agentknit) integration whose
-only model-facing tool is `python(code)`, executed by
-[Pydantic Monty](https://github.com/pydantic/monty), not CPython.
+An agent receives capabilities, not ambient authority. A policy defines the
+resources it may use and the bounds on their use; anything not granted is denied.
+The goal is that code can work directly in a workspace without inheriting the
+host user's other privileges.
+
+“Guarantee” here means an enforceable, testable security property under explicit
+trust assumptions—not a proof of correctness, invulnerability or complete
+CPython compatibility. The critical question is whether every effect crosses one
+mediation boundary, and whether independent tests can falsify that claim.
 
 ## Install and use
 
@@ -82,6 +88,33 @@ Monty's capability-relative mounts. Source, output, result, memory, recursion,
 suspensions, time, write bytes and total calls are bounded. A worker/session is
 never reused between model calls. Execution failures return structured errors and
 never fall back to CPython.
+
+### How to establish the claim
+
+State the claim as a total mediation property: every observable effect either is
+permitted by the effective policy or is absent. Then provide four kinds of
+evidence:
+
+1. **Architecture:** enumerate every model-to-host path and show there is no
+   fallback executor, ambient file tool or model-controlled callback. A single
+   tool schema alone does not prove this; review dispatch and the runner too.
+2. **Differential/adversarial tests:** pair every denied probe with a granted
+   control, so a broken executor that rejects everything cannot appear secure.
+   Include traversal, absolute paths, escaping symlinks, ambient environment,
+   sockets, processes, host functions and resource boundaries.
+3. **Independent oracles:** assert effects on the host (sentinel contents,
+   filesystem changes, process/network observations), not merely sandbox errors
+   or exit statuses. Run fuzzing and mutation tests: deliberately remove a
+   mediation check and require a test to fail.
+4. **Assumptions and provenance:** pin and audit Monty, exercise the exact
+   production tool path, and document trusted components and residual risks.
+
+Finite tests cannot prove universal absence of escapes. Stronger evidence would
+be OS-level isolation plus a machine-checked model of the complete host boundary.
+The static checker is not that proof: dynamic Python remains indeterminate and
+runtime mediation is still required.
+
+### Current evidence and limitations
 
 This is a tested engineering confinement claim, not a formal proof or a claim
 that Monty has no vulnerabilities. Trust includes the host OS/Python process,
